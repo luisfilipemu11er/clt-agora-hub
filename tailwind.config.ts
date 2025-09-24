@@ -22,10 +22,13 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          dark: "hsl(var(--primary-dark))",
+          light: "hsl(var(--primary-light))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+          light: "hsl(var(--secondary-light))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -57,6 +60,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        professional: {
+          blue: "hsl(var(--professional-blue))",
+          "blue-dark": "hsl(var(--professional-blue-dark))",
+          gray: "hsl(var(--professional-gray))",
+          "gray-light": "hsl(var(--professional-gray-light))",
+        },
+        news: {
+          highlight: "hsl(var(--news-highlight))",
+        },
+        success: {
+          green: "hsl(var(--success-green))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -81,9 +96,15 @@ export default {
           },
         },
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-card": "var(--gradient-card)",
+        "gradient-hero": "var(--gradient-hero)",
+      },
+      boxShadow: {
+        "card": "var(--shadow-card)",
+        "button": "var(--shadow-button)",
+        "elevated": "var(--shadow-elevated)",
       },
     },
   },
