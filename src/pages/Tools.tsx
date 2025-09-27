@@ -4,7 +4,7 @@ import { Calculator, BookOpen, FileText, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BottomNavigation } from "@/components/BottomNavigation";
 
-const tools = [
+export const tools = [
   {
     id: "vacation-calculator",
     title: "Calculadora de Férias",

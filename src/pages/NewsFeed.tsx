@@ -1,49 +1,67 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { NewsCard } from "@/components/NewsCard";
 import { FilterBar } from "@/components/FilterBar";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Bot, MessageCircle } from "lucide-react";
+import type { NewsItem, ApiNewsItem } from "@/types";
+import { parseDate } from "@/lib/date-utils";
 
-// Mock data - in real app this would come from Supabase
-const mockNews = [
-  {
-    id: "1",
-    titulo: "Nova regulamentação do eSocial para 2024",
-    resumo: "Ministério do Trabalho anuncia mudanças importantes no cronograma de obrigatoriedades do eSocial que afetam empresas de todos os portes.",
-    analise_pratica: "Empresas devem se preparar para as novas exigências até março de 2024. Recomenda-se revisar os layouts e testar as transmissões com antecedência.",
-    categoria: "eSocial",
-    data_publicacao: "2024-01-15",
-    link_original: "https://exemplo.com"
-  },
-  {
-    id: "2", 
-    titulo: "STF decide sobre terceirização em atividade-fim",
-    resumo: "Supremo Tribunal Federal estabelece novos parâmetros para contratação de terceirizados em atividades principais das empresas.",
-    analise_pratica: "A decisão impacta diretamente os contratos em vigor. Empresas devem revisar seus acordos de terceirização para adequação às novas regras.",
-    categoria: "Decisões Judiciais",
-    data_publicacao: "2024-01-12",
-    link_original: "https://exemplo.com"
-  },
-  {
-    id: "3",
-    titulo: "Mudanças na CLT: Novo texto sobre trabalho híbrido",
-    resumo: "Congresso aprova alterações na Consolidação das Leis do Trabalho para regulamentar modalidades de trabalho remoto e híbrido.",
-    analise_pratica: "Empregadores devem formalizar políticas internas de trabalho híbrido e ajustar contratos de trabalho conforme as novas diretrizes.",
-    categoria: "Legislação",
-    data_publicacao: "2024-01-10",
-    link_original: "https://exemplo.com"
+// Fetch function
+export const fetchNews = async (): Promise<NewsItem[]> => {
+  const response = await fetch("http://127.0.0.1:5000/api/chat");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
   }
-];
+  const data: ApiNewsItem[] = await response.json();
+  
+  // Adapt the data to the shape expected by NewsCard
+  return data.map(item => ({
+    id: item.link, // Using link as a unique ID
+    titulo: item.title,
+    resumo: item.summary,
+    categoria: item.category,
+    data_publicacao: item.publication_date,
+  }));
+};
 
 export const NewsFeed = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { data: news, isLoading, isError, error } = useQuery({
+    queryKey: ['news'],
+    queryFn: fetchNews,
+  });
 
-  const filteredNews = selectedCategory 
-    ? mockNews.filter(news => news.categoria === selectedCategory)
-    : mockNews;
+  const categories = useMemo(() => {
+    if (!news) return [];
+    const allCategories = news.map(item => item.categoria).filter(Boolean);
+    return [...new Set(allCategories)];
+  }, [news]);
+
+  const filteredNews = useMemo(() => {
+    if (!news) return [];
+    
+    if (selectedCategory) {
+      return news.filter(item => item.categoria === selectedCategory);
+    }
+
+    // Filter for the last 7 days for "Todas"
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    return news.filter(item => {
+        try {
+            const newsDate = parseDate(item.data_publicacao);
+            return newsDate && newsDate > sevenDaysAgo;
+        } catch {
+            return false;
+        }
+    });
+  }, [news, selectedCategory]);
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
@@ -84,23 +102,37 @@ export const NewsFeed = () => {
         </div>
 
         <FilterBar 
+          categories={categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
 
         <div className="space-y-4">
-          {filteredNews.map((news) => (
-            <NewsCard key={news.id} news={news} />
+          {isLoading && (
+            <>
+              <Skeleton className="h-40 w-full" />
+              <Skeleton className="h-40 w-full" />
+              <Skeleton className="h-40 w-full" />
+            </>
+          )}
+          {isError && (
+            <div className="text-center py-12">
+              <p className="text-destructive">
+                Erro ao carregar notícias: {error.message}
+              </p>
+            </div>
+          )}
+          {filteredNews && filteredNews.map((newsItem) => (
+            <NewsCard key={newsItem.id} news={newsItem} />
           ))}
+          {filteredNews && filteredNews.length === 0 && !isLoading && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                Nenhuma notícia encontrada.
+              </p>
+            </div>
+          )}
         </div>
-
-        {filteredNews.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              Nenhuma notícia encontrada para esta categoria.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Floating Chatbot Button */}

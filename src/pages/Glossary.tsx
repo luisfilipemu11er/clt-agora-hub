@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, BookOpen, Search } from "lucide-react";
 
 // Mock glossary data
-const glossaryTerms = [
+export const glossaryTerms = [
   {
     term: "Abono Pecuniário",
     definition: "Conversão de 1/3 das férias em dinheiro, permitida pela CLT.",
