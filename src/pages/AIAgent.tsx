@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, User, Send, MessageCircle } from "lucide-react";
+import { Bot, User, Send, MessageCircle, ArrowLeft } from "lucide-react";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -26,6 +27,7 @@ export const AIAgent = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -97,11 +99,21 @@ export const AIAgent = () => {
       {/* Header */}
       <div className="bg-gradient-primary text-white p-6 shadow-elevated">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold mb-2 flex items-center gap-3">
-            <Bot className="w-6 h-6" />
-            Agente IA Trabalhista
-          </h1>
-          <p className="text-primary-foreground/80">
+          <div className="flex items-center gap-4 mb-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="text-white hover:bg-white/10 -ml-2"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-2xl font-bold flex items-center gap-3">
+              <Bot className="w-6 h-6" />
+              Agente IA Trabalhista
+            </h1>
+          </div>
+          <p className="text-primary-foreground/80 ml-12">
             Tire suas dúvidas sobre legislação trabalhista
           </p>
         </div>
