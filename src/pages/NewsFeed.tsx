@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { NewsCard } from "@/components/NewsCard";
 import { FilterBar } from "@/components/FilterBar";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { Button } from "@/components/ui/button";
+import { Bot, MessageCircle } from "lucide-react";
 
 // Mock data - in real app this would come from Supabase
 const mockNews = [
@@ -36,6 +39,7 @@ const mockNews = [
 
 export const NewsFeed = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const filteredNews = selectedCategory 
     ? mockNews.filter(news => news.categoria === selectedCategory)
@@ -55,6 +59,30 @@ export const NewsFeed = () => {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto p-6">
+        {/* AI Agent Call-to-Action */}
+        <div className="mb-6 p-6 bg-gradient-card rounded-xl border shadow-card">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center">
+              <Bot className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold mb-1">
+                Pergunte à nossa IA Trabalhista
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                Tire suas dúvidas sobre legislação trabalhista instantaneamente
+              </p>
+            </div>
+            <Button 
+              onClick={() => navigate('/ai-agent')}
+              className="bg-primary hover:bg-primary/90"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Consultar IA
+            </Button>
+          </div>
+        </div>
+
         <FilterBar 
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
@@ -74,6 +102,15 @@ export const NewsFeed = () => {
           </div>
         )}
       </div>
+
+      {/* Floating Chatbot Button */}
+      <Button
+        onClick={() => navigate('/ai-agent')}
+        className="fixed bottom-24 right-6 md:bottom-6 w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-elevated z-40"
+        size="icon"
+      >
+        <Bot className="w-6 h-6" />
+      </Button>
 
       <BottomNavigation />
     </div>
