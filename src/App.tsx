@@ -9,6 +9,7 @@ import { Tools } from "./pages/Tools";
 import { VacationCalculator } from "./pages/VacationCalculator";
 import { Glossary } from "./pages/Glossary";
 import { Search } from "./pages/Search";
+import { AIAgent } from "./pages/AIAgent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/tools/vacation-calculator" element={<VacationCalculator />} />
           <Route path="/tools/glossary" element={<Glossary />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/ai-agent" element={<AIAgent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

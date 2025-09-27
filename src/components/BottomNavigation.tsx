@@ -1,4 +1,4 @@
-import { Home, Wrench, Search } from "lucide-react";
+import { Home, Wrench, Search, Bot } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,7 @@ export const BottomNavigation = () => {
     { icon: Home, label: "Início", path: "/" },
     { icon: Wrench, label: "Ferramentas", path: "/tools" },
     { icon: Search, label: "Buscar", path: "/search" },
+    { icon: Bot, label: "IA", path: "/ai-agent" },
   ];
 
   return (
