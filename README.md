@@ -2,122 +2,122 @@
 
 ![CLT Agora Logo](public/clt-favicon.svg)
 
-CLT Agora is a comprehensive web application designed to empower Brazilian workers with essential labor law information, practical calculators, and an intelligent AI assistant. Our goal is to demystify complex labor legislation, making it accessible and understandable for everyone.
+CLT Agora é uma aplicação web abrangente projetada para capacitar trabalhadores brasileiros com informações essenciais sobre leis trabalhistas, calculadoras práticas e um assistente de IA inteligente. Nosso objetivo é desmistificar a complexa legislação trabalhista, tornando-a acessível e compreensível para todos.
 
-## 🚀 Features
+## 🚀 Funcionalidades
 
--   **Calculadora de Rescisão:** Estimate termination payments with detailed breakdowns, covering various dismissal reasons, proportional vacations, 13th salary, FGTS, INSS, and IRRF calculations.
--   **Calculadora de Férias:** Calculate vacation entitlements and values.
--   **Glossário Trabalhista:** A searchable and filterable glossary of key labor law terms, complete with definitions and practical examples.
--   **Agente IA:** An AI-powered assistant ready to answer your questions about Brazilian labor legislation. Available as a full-page chat interface and a convenient floating mini-chat widget.
--   **Feed de Notícias:** Stay updated with the latest news and developments in labor law.
--   **Navegação Responsiva:** A modern and intuitive sidebar navigation, optimized for both desktop and mobile devices.
+-   **Calculadora de Rescisão:** Estime pagamentos de rescisão com detalhamento, cobrindo várias razões de demissão, férias proporcionais, 13º salário, cálculos de FGTS, INSS e IRRF.
+-   **Calculadora de Férias:** Calcule os direitos e valores de férias.
+-   **Glossário Trabalhista:** Um glossário pesquisável e filtrável de termos-chave da legislação trabalhista, completo com definições e exemplos práticos.
+-   **Agente IA:** Um assistente alimentado por IA pronto para responder às suas perguntas sobre a legislação trabalhista brasileira. Disponível como uma interface de chat em página inteira e um conveniente widget de mini-chat flutuante.
+-   **Feed de Notícias:** Mantenha-se atualizado com as últimas notícias e desenvolvimentos na legislação trabalhista.
+-   **Navegação Responsiva:** Uma navegação lateral moderna e intuitiva, otimizada para dispositivos desktop e móveis.
 
-## 🛠️ Technologies Used
+## 🛠️ Tecnologias Utilizadas
 
-This project leverages a robust stack of modern web and backend technologies:
+Este projeto utiliza um conjunto robusto de tecnologias web e backend modernas:
 
 **Frontend:**
 
--   **React:** A declarative, component-based JavaScript library for building user interfaces.
--   **TypeScript:** A typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality and maintainability.
--   **Vite:** A fast frontend build tool that provides an excellent development experience.
--   **Tailwind CSS:** A utility-first CSS framework for rapidly building custom designs.
--   **Shadcn/ui:** A collection of re-usable components built with Radix UI and Tailwind CSS.
--   **`react-router-dom`:** For declarative routing in React applications.
--   **`lucide-react`:** A beautiful and customizable icon library.
--   **`date-fns`:** A comprehensive JavaScript date utility library.
--   **`react-markdown` & `remark-gfm`:** For rendering Markdown content, especially in the AI chat.
+-   **React:** Uma biblioteca JavaScript declarativa e baseada em componentes para construir interfaces de usuário.
+-   **TypeScript:** Um superconjunto tipado de JavaScript que compila para JavaScript puro, melhorando a qualidade e a manutenibilidade do código.
+-   **Vite:** Uma ferramenta de construção de frontend rápida que oferece uma excelente experiência de desenvolvimento.
+-   **Tailwind CSS:** Um framework CSS utility-first para construir rapidamente designs personalizados.
+-   **Shadcn/ui:** Uma coleção de componentes reutilizáveis construídos com Radix UI e Tailwind CSS.
+-   **`react-router-dom`:** Para roteamento declarativo em aplicações React.
+-   **`lucide-react`:** Uma biblioteca de ícones bonita e personalizável.
+-   **`date-fns`:** Uma biblioteca abrangente de utilitários de data JavaScript.
+-   **`react-markdown` & `remark-gfm`:** Para renderização de conteúdo Markdown, especialmente no chat da IA.
 
 **Backend:**
 
--   **Python:** The primary language for backend services.
--   **Flask:** A lightweight WSGI web application framework for Python, likely used for the AI API.
--   **`requests`:** For making HTTP requests (e.g., to external APIs).
--   **`BeautifulSoup4`:** For web scraping (if applicable).
+-   **Python:** A linguagem principal para serviços de backend.
+-   **Flask:** Um framework web WSGI leve para Python, provavelmente usado para a API da IA.
+-   **`requests`:** Para fazer requisições HTTP (por exemplo, para APIs externas).
+-   **`BeautifulSoup4`:** Para web scraping (se aplicável).
 
-## ⚙️ Setup and Installation
+## ⚙️ Configuração e Instalação
 
-Follow these steps to get the project up and running on your local machine.
+Siga estes passos para configurar e executar o projeto em sua máquina local.
 
-### Prerequisites
+### Pré-requisitos
 
--   Node.js (LTS version recommended) & npm (or [Bun](https://bun.sh/))
+-   Node.js (versão LTS recomendada) & npm (ou [Bun](https://bun.sh/))
 -   Python 3.8+
 -   Git
 
-### 1. Clone the Repository
+### 1. Clone o Repositório
 
 ```bash
 git clone https://github.com/luisfilipemu11er/clt-agora-hub.git
 cd clt-agora-hub
 ```
 
-### 2. Install Frontend Dependencies
+### 2. Instale as Dependências do Frontend
 
 ```bash
-npm install # or bun install
+npm install # ou bun install
 ```
 
-### 3. Install Backend Dependencies
+### 3. Instale as Dependências do Backend
 
-It's recommended to use a virtual environment for Python projects.
+É recomendado usar um ambiente virtual para projetos Python.
 
 ```bash
 python -m venv venv
-./venv/Scripts/activate # On Windows
-source venv/bin/activate # On macOS/Linux
+./venv/Scripts/activate # No Windows
+source venv/bin/activate # No macOS/Linux
 
 pip install -r requirements.txt
 ```
 
-## ▶️ How to Run the Project
+## ▶️ Como Executar o Projeto
 
-### 1. Start the Backend Server
+### 1. Inicie o Servidor Backend
 
-Navigate to the project root and run the Flask application:
+Navegue até a raiz do projeto e execute a aplicação Flask:
 
 ```bash
-./venv/Scripts/activate # On Windows (if not already active)
-source venv/bin/activate # On macOS/Linux (if not already active)
+./venv/Scripts/activate # No Windows (se ainda não estiver ativo)
+source venv/bin/activate # No macOS/Linux (se ainda não estiver ativo)
 
 python app.py
 ```
 
-The backend server should start on `http://127.0.0.1:5000`.
+O servidor backend deve iniciar em `http://127.0.0.1:5000`.
 
-### 2. Start the Frontend Development Server
+### 2. Inicie o Servidor de Desenvolvimento Frontend
 
-In a separate terminal, navigate to the project root and start the Vite development server:
+Em um terminal separado, navegue até a raiz do projeto e inicie o servidor de desenvolvimento Vite:
 
 ```bash
-npm run dev # or bun run dev
+npm run dev # ou bun run dev
 ```
 
-The frontend application will typically open in your browser at `http://localhost:5173` (or another available port).
+A aplicação frontend será aberta em seu navegador em `http://localhost:5173` (ou outra porta disponível).
 
-## 📂 Project Structure (Key Directories)
+## 📂 Estrutura do Projeto (Diretórios Chave)
 
--   `public/`: Static assets like favicons and images.
--   `src/`: Contains all frontend source code.
-    -   `src/components/`: Reusable UI components.
-        -   `src/components/ui/`: Shadcn/ui components and custom UI elements.
-        -   `src/components/AIChatWidget.tsx`: The floating AI chat widget.
-        -   `src/components/Layout.tsx`: The main application layout, including the sidebar.
-    -   `src/features/`: Feature-specific modules (e.g., `termination`, `vacation`).
-    -   `src/hooks/`: Custom React hooks.
-    -   `src/lib/`: Utility functions and helper modules (e.g., `calculations.ts`, `date-utils.ts`).
-    -   `src/pages/`: Top-level page components (e.g., `Home.tsx`, `Glossary.tsx`, `AIAgent.tsx`).
--   `app.py`: Main Python backend application (likely Flask).
--   `processing.py`: Python script for data processing.
--   `scraper.py`: Python script for web scraping.
--   `requirements.txt`: Python dependencies.
--   `package.json`: Frontend dependencies and scripts.
+-   `public/`: Ativos estáticos como favicons e imagens.
+-   `src/`: Contém todo o código-fonte do frontend.
+    -   `src/components/`: Componentes de UI reutilizáveis.
+        -   `src/components/ui/`: Componentes Shadcn/ui e elementos de UI personalizados.
+        -   `src/components/AIChatWidget.tsx`: O widget de chat flutuante da IA.
+        -   `src/components/Layout.tsx`: O layout principal da aplicação, incluindo a barra lateral.
+    -   `src/features/`: Módulos específicos de funcionalidades (por exemplo, `termination`, `vacation`).
+    -   `src/hooks/`: Hooks React personalizados.
+    -   `src/lib/`: Funções de utilidade e módulos auxiliares (por exemplo, `calculations.ts`, `date-utils.ts`).
+    -   `src/pages/`: Componentes de página de nível superior (por exemplo, `Home.tsx`, `Glossary.tsx`, `AIAgent.tsx`).
+-   `app.py`: Aplicação principal do backend Python (provavelmente Flask).
+-   `processing.py`: Script Python para processamento de dados.
+-   `scraper.py`: Script Python para web scraping.
+-   `requirements.txt`: Dependências Python.
+-   `package.json`: Dependências e scripts do frontend.
 
-## 🤝 Contributing
+## 🤝 Contribuindo
 
-Contributions are welcome! Please feel free to fork the repository, create a new branch, and submit a pull request with your improvements.
+Contribuições são bem-vindas! Sinta-se à vontade para fazer um fork do repositório, criar uma nova branch e enviar um pull request com suas melhorias.
 
-## 📄 License
+## 📄 Licença
 
-This project is open-source and available under the [MIT License](LICENSE).
+Este projeto é de código aberto e está disponível sob a [Licença MIT](LICENSE).
