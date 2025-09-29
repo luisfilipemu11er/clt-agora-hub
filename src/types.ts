@@ -1,18 +1,18 @@
 export interface ApiNewsItem {
-  position: number;
   title: string;
-  summary: string;
-  practical_analysis: string;
   link: string;
-  publication_date: string;
+  date: string;
   source: string;
   category: string;
+  importance_score: number;
 }
 
 export interface NewsItem {
   id: string;
   titulo: string;
-  resumo: string;
+  link: string;
+  source: string;
   categoria: string;
   data_publicacao: string;
+  importance_score: number;
 }

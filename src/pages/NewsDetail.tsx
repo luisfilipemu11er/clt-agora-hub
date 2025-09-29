@@ -34,7 +34,7 @@ export const NewsDetail = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Notícia não encontrada</h2>
           <p className="text-muted-foreground mb-4">Volte para o feed de notícias e selecione um artigo.</p>
-          <Button onClick={() => navigate("/news")}>Voltar ao Feed</Button>
+          <Button onClick={() => navigate("/news-feed")}>Voltar ao Feed</Button>
         </div>
       </div>
     );
@@ -63,7 +63,7 @@ export const NewsDetail = () => {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate("/news")}
+            onClick={() => navigate(-1)}
             className="p-2"
           >
             <ArrowLeft className="w-5 h-5" />

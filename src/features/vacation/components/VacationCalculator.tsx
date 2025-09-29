@@ -6,20 +6,23 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Calculator, Info } from "lucide-react";
 import { toast } from "sonner";
+import {
+  calculateINSS,
+  calculateIRRF,
+  type VacationCalculationResult,
+} from "@/lib/calculations";
 
 export const VacationCalculator = () => {
   const navigate = useNavigate();
   const [salary, setSalary] = useState("");
   const [vacationDays, setVacationDays] = useState("30");
-  const [result, setResult] = useState<{
-    grossVacation: number;
-    oneThirdBonus: number;
-    total: number;
-  } | null>(null);
+  const [dependents, setDependents] = useState("0");
+  const [result, setResult] = useState<VacationCalculationResult | null>(null);
 
   const calculateVacation = () => {
-    const salaryValue = parseFloat(salary.replace(",", "."));
+    const salaryValue = parseFloat(salary.replace(/\./g, "").replace(",", "."));
     const daysValue = parseInt(vacationDays);
+    const dependentsValue = parseInt(dependents);
 
     if (!salaryValue || salaryValue <= 0) {
       toast.error("Digite um salário válido");
@@ -31,16 +34,26 @@ export const VacationCalculator = () => {
       return;
     }
 
-    // Cálculo básico de férias
     const dailySalary = salaryValue / 30;
     const grossVacation = dailySalary * daysValue;
     const oneThirdBonus = grossVacation / 3;
-    const total = grossVacation + oneThirdBonus;
+    const totalGross = grossVacation + oneThirdBonus;
+
+    const inss = calculateINSS(totalGross);
+    const irrfBase = totalGross - inss;
+    const irrf = calculateIRRF(irrfBase, dependentsValue);
+
+    const netVacation = totalGross - inss - irrf;
 
     setResult({
       grossVacation,
-      oneThirdBonus, 
-      total
+      oneThirdBonus,
+      totalGross,
+      inssBase: totalGross,
+      inss,
+      irrfBase,
+      irrf,
+      netVacation,
     });
 
     toast.success("Cálculo realizado com sucesso!");
@@ -118,6 +131,18 @@ export const VacationCalculator = () => {
                 </p>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="dependents">Dependentes (para IRRF)</Label>
+                <Input
+                  id="dependents"
+                  type="number"
+                  min="0"
+                  value={dependents}
+                  onChange={(e) => setDependents(e.target.value)}
+                  className="text-lg"
+                />
+              </div>
+
               <Button 
                 onClick={calculateVacation}
                 className="w-full shadow-button"
@@ -143,22 +168,56 @@ export const VacationCalculator = () => {
                   <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Férias brutas:</span>
+                        <span className="text-muted-foreground">Salário Bruto:</span>
                         <span className="font-semibold">
-                          {formatCurrency(result.grossVacation)}
+                          {formatCurrency(parseFloat(salary.replace(/\./g, "").replace(",", ".")))}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">1/3 Constitucional:</span>
+                        <span className="text-muted-foreground">Dias de Férias:</span>
                         <span className="font-semibold">
-                          {formatCurrency(result.oneThirdBonus)}
+                          {vacationDays}
                         </span>
+                      </div>
+                      <div className="border-t border-border/50 pt-3 mt-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Férias brutas:</span>
+                          <span className="font-semibold">
+                            {formatCurrency(result.grossVacation)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">1/3 Constitucional:</span>
+                          <span className="font-semibold">
+                            {formatCurrency(result.oneThirdBonus)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center font-bold">
+                          <span className="">Total Bruto:</span>
+                          <span className="">
+                            {formatCurrency(result.totalGross)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="border-t border-border/50 pt-3 mt-3">
+                        <div className="flex justify-between items-center text-red-500">
+                          <span className="">INSS:</span>
+                          <span className="">
+                            - {formatCurrency(result.inss)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-red-500">
+                          <span className="">IRRF:</span>
+                          <span className="">
+                            - {formatCurrency(result.irrf)}
+                          </span>
+                        </div>
                       </div>
                       <div className="border-t border-border/50 pt-3">
                         <div className="flex justify-between items-center">
-                          <span className="font-semibold text-lg">Total a receber:</span>
+                          <span className="font-semibold text-lg">Total Líquido:</span>
                           <span className="font-bold text-xl text-success-green">
-                            {formatCurrency(result.total)}
+                            {formatCurrency(result.netVacation)}
                           </span>
                         </div>
                       </div>
@@ -171,9 +230,9 @@ export const VacationCalculator = () => {
                       Observações Importantes
                     </h3>
                     <ul className="text-sm text-foreground/80 space-y-1">
-                      <li>• Valores brutos, antes dos descontos</li>
-                      <li>• Incidências: INSS, IR, FGTS conforme tabela vigente</li>
-                      <li>• Consulte a legislação para casos específicos</li>
+                      <li>• Valores aproximados. Confirme com seu RH.</li>
+                      <li>• FGTS de 8% sobre o total bruto é depositado, não descontado.</li>
+                      <li>• Cálculo não inclui abono pecuniário ou outras variáveis.</li>
                     </ul>
                   </div>
                 </div>

@@ -13,9 +13,24 @@ export const glossaryTerms = [
     example: "Funcionário com 30 dias de férias pode vender 10 dias e gozar 20 dias."
   },
   {
+    term: "Adicional Noturno",
+    definition: "Acréscimo de, no mínimo, 20% sobre o valor da hora normal para trabalhadores que atuam no período noturno (entre 22h e 5h).",
+    example: "Se a hora normal é R$ 10, a hora noturna será de no mínimo R$ 12."
+  },
+  {
     term: "Aviso Prévio",
     definition: "Comunicação antecipada do término do contrato de trabalho.",
     example: "Empregador deve comunicar com 30 dias de antecedência ou pagar o período."
+  },
+  {
+    term: "Banco de Horas",
+    definition: "Acordo que flexibiliza a jornada de trabalho, permitindo que as horas extras trabalhadas sejam compensadas com folgas.",
+    example: "Funcionário que trabalhou 2 horas a mais na segunda-feira pode sair 2 horas mais cedo na sexta-feira."
+  },
+  {
+    term: "CIPA",
+    definition: "Comissão Interna de Prevenção de Acidentes e de Assédio, responsável por zelar pela segurança e saúde no trabalho.",
+    example: "A CIPA realiza inspeções de segurança e promove a Semana Interna de Prevenção de Acidentes do Trabalho (SIPAT)."
   },
   {
     term: "CLT",
@@ -23,9 +38,34 @@ export const glossaryTerms = [
     example: "Decreto-Lei nº 5.452 de 1943, que regulamenta as relações de trabalho."
   },
   {
+    term: "Convenção Coletiva de Trabalho",
+    definition: "Acordo entre sindicatos de trabalhadores e de empregadores que estabelece as condições de trabalho para uma determinada categoria profissional.",
+    example: "A convenção dos bancários define o piso salarial e o valor do vale-refeição para todos os bancários do país."
+  },
+  {
+    term: "CTPS",
+    definition: "Carteira de Trabalho e Previdência Social, documento que registra a vida profissional do trabalhador (hoje em formato digital).",
+    example: "O empregador deve assinar a CTPS Digital do funcionário em até 5 dias úteis após a admissão."
+  },
+  {
+    term: "Descanso Semanal Remunerado (DSR)",
+    definition: "Direito a um período de folga semanal remunerada, geralmente de 24 horas consecutivas, preferencialmente aos domingos.",
+    example: "O funcionário que trabalha de segunda a sábado tem direito a folga remunerada no domingo."
+  },
+  {
+    term: "Dissídio Coletivo",
+    definition: "Ação judicial para resolver controvérsias sobre direitos de uma categoria profissional, quando a negociação coletiva não obteve sucesso.",
+    example: "O sindicato dos metalúrgicos entra com dissídio para pedir um reajuste salarial para a categoria."
+  },
+  {
     term: "eSocial", 
     definition: "Sistema de escrituração digital das obrigações fiscais, previdenciárias e trabalhistas.",
     example: "Todas as informações trabalhistas devem ser enviadas pelo eSocial mensalmente."
+  },
+  {
+    term: "Férias",
+    definition: "Período de descanso remunerado a que o trabalhador tem direito após 12 meses de trabalho (período aquisitivo).",
+    example: "Após um ano de trabalho, o funcionário tem direito a 30 dias de férias com acréscimo de 1/3 do salário."
   },
   {
     term: "FGTS",
@@ -43,9 +83,24 @@ export const glossaryTerms = [
     example: "Segunda a sexta: 8h48min por dia para completar 44h semanais."
   },
   {
+    term: "Licença-Maternidade",
+    definition: "Direito da empregada gestante a 120 dias de licença, sem prejuízo do emprego e do salário.",
+    example: "A funcionária pode iniciar a licença até 28 dias antes do parto."
+  },
+  {
+    term: "Periculosidade",
+    definition: "Adicional de 30% sobre o salário base para trabalhadores que exercem atividades perigosas, que oferecem risco à vida.",
+    example: "Eletricistas que trabalham com alta tensão recebem adicional de periculosidade."
+  },
+  {
     term: "Rescisão",
     definition: "Término do contrato de trabalho com pagamento das verbas devidas.",
     example: "Demissão sem justa causa gera direito a aviso prévio, férias e 13º salário."
+  },
+  {
+    term: "13º Salário",
+    definition: "Gratificação natalina paga anualmente aos trabalhadores, correspondente a 1/12 da remuneração por mês trabalhado.",
+    example: "Pode ser pago em duas parcelas, a primeira até novembro e a segunda até 20 de dezembro."
   }
 ];
 
