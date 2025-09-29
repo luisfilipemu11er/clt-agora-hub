@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
+.env
+
+# Temporary data
+temp_data/
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc

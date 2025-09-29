@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { parseDate } from "@/lib/date-utils";
 
 interface NewsItem {
   id: string;
@@ -18,11 +19,12 @@ interface NewsCardProps {
 
 export const NewsCard = ({ news }: NewsCardProps) => {
   const navigate = useNavigate();
+  const formattedDate = parseDate(news.data_publicacao)?.toLocaleDateString('pt-BR') || news.data_publicacao;
 
   return (
     <Card 
       className="shadow-card hover:shadow-elevated transition-all duration-300 cursor-pointer border-border/50 bg-gradient-card"
-      onClick={() => navigate(`/news/${news.id}`)}
+      onClick={() => navigate(`/news/${encodeURIComponent(news.id)}`, { state: { news } })}
     >
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-3">
@@ -31,7 +33,7 @@ export const NewsCard = ({ news }: NewsCardProps) => {
           </Badge>
           <div className="flex items-center text-muted-foreground text-sm">
             <Calendar className="w-4 h-4 mr-1" />
-            {new Date(news.data_publicacao).toLocaleDateString('pt-BR')}
+            {formattedDate}
           </div>
         </div>
         

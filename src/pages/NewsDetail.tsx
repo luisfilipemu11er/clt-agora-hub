@@ -1,53 +1,40 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Share2, ExternalLink, Lightbulb } from "lucide-react";
+import { ArrowLeft, Calendar, Share2, ExternalLink, Lightbulb, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { parseDate } from "@/lib/date-utils";
+import type { NewsItem } from "@/types";
 
-// Mock data - same as NewsFeed
-const mockNews = [
-  {
-    id: "1",
-    titulo: "Nova regulamentação do eSocial para 2024",
-    resumo: "Ministério do Trabalho anuncia mudanças importantes no cronograma de obrigatoriedades do eSocial que afetam empresas de todos os portes.",
-    analise_pratica: "Empresas devem se preparar para as novas exigências até março de 2024. Recomenda-se revisar os layouts e testar as transmissões com antecedência. É fundamental que os departamentos de RH iniciem imediatamente o processo de adequação dos sistemas internos e treinem suas equipes para as novas funcionalidades.",
-    categoria: "eSocial",
-    data_publicacao: "2024-01-15",
-    link_original: "https://exemplo.com"
-  },
-  {
-    id: "2", 
-    titulo: "STF decide sobre terceirização em atividade-fim",
-    resumo: "Supremo Tribunal Federal estabelece novos parâmetros para contratação de terceirizados em atividades principais das empresas.",
-    analise_pratica: "A decisão impacta diretamente os contratos em vigor. Empresas devem revisar seus acordos de terceirização para adequação às novas regras. Recomenda-se auditoria jurídica imediata dos contratos existentes.",
-    categoria: "Decisões Judiciais",
-    data_publicacao: "2024-01-12",
-    link_original: "https://exemplo.com"
-  },
-  {
-    id: "3",
-    titulo: "Mudanças na CLT: Novo texto sobre trabalho híbrido",
-    resumo: "Congresso aprova alterações na Consolidação das Leis do Trabalho para regulamentar modalidades de trabalho remoto e híbrido.",
-    analise_pratica: "Empregadores devem formalizar políticas internas de trabalho híbrido e ajustar contratos de trabalho conforme as novas diretrizes. É necessário estabelecer métricas claras de produtividade.",
-    categoria: "Legislação",
-    data_publicacao: "2024-01-10",
-    link_original: "https://exemplo.com"
+const fetchArticleContent = async (url: string) => {
+  const response = await fetch(`http://127.0.0.1:5000/api/article?url=${encodeURIComponent(url)}`);
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
   }
-];
+  return response.json();
+};
 
 export const NewsDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  const news = mockNews.find(item => item.id === id);
+  const location = useLocation();
+  const newsItem = location.state?.news as NewsItem | undefined;
 
-  if (!news) {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['article', id],
+    queryFn: () => fetchArticleContent(id!),
+    enabled: !!id,
+  });
+
+  if (!newsItem) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Notícia não encontrada</h2>
-          <Button onClick={() => navigate("/")}>Voltar ao início</Button>
+          <p className="text-muted-foreground mb-4">Volte para o feed de notícias e selecione um artigo.</p>
+          <Button onClick={() => navigate("/news-feed")}>Voltar ao Feed</Button>
         </div>
       </div>
     );
@@ -56,8 +43,8 @@ export const NewsDetail = () => {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: news.titulo,
-        text: news.resumo,
+        title: newsItem.titulo,
+        text: newsItem.resumo,
         url: window.location.href,
       });
     } else {
@@ -65,6 +52,8 @@ export const NewsDetail = () => {
       toast.success("Link copiado para a área de transferência!");
     }
   };
+  
+  const formattedDate = parseDate(newsItem.data_publicacao)?.toLocaleDateString('pt-BR') || newsItem.data_publicacao;
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,7 +63,7 @@ export const NewsDetail = () => {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             className="p-2"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -90,25 +79,33 @@ export const NewsDetail = () => {
             {/* Category and date */}
             <div className="flex items-center justify-between mb-6">
               <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                {news.categoria}
+                {newsItem.categoria}
               </Badge>
               <div className="flex items-center text-muted-foreground">
                 <Calendar className="w-4 h-4 mr-2" />
-                {new Date(news.data_publicacao).toLocaleDateString('pt-BR')}
+                {formattedDate}
               </div>
             </div>
 
             {/* Title */}
             <h1 className="text-3xl font-bold text-foreground mb-6 leading-tight">
-              {news.titulo}
+              {newsItem.titulo}
             </h1>
 
             {/* Summary */}
             <div className="mb-8">
               <h2 className="text-lg font-semibold mb-3 text-foreground">Resumo</h2>
               <p className="text-foreground/80 leading-relaxed">
-                {news.resumo}
+                {newsItem.resumo}
               </p>
+            </div>
+
+            {/* Full Content */}
+            <div className="mb-8">
+              <h2 className="text-lg font-semibold mb-3 text-foreground">Conteúdo Completo</h2>
+              {isLoading && <Loader2 className="w-6 h-6 animate-spin" />}
+              {isError && <p className="text-destructive">Erro ao carregar o conteúdo da notícia.</p>}
+              {data && <p className="text-foreground/80 leading-relaxed">{data.content}</p>}
             </div>
 
             {/* Practical Analysis - Highlighted section */}
@@ -119,7 +116,8 @@ export const NewsDetail = () => {
                   <h2 className="text-lg font-bold text-foreground">Análise Prática</h2>
                 </div>
                 <p className="text-foreground/90 leading-relaxed">
-                  {news.analise_pratica}
+                  {/* Placeholder for practical analysis */}
+                  Análise prática será disponibilizada em breve.
                 </p>
               </CardContent>
             </Card>
@@ -133,7 +131,7 @@ export const NewsDetail = () => {
               <Button 
                 variant="default" 
                 className="flex-1"
-                onClick={() => window.open(news.link_original, '_blank')}
+                onClick={() => window.open(newsItem.id, '_blank')}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Ver na Fonte Original

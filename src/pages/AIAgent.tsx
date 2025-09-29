@@ -7,6 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, User, Send, MessageCircle, ArrowLeft } from "lucide-react";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useToast } from "@/components/ui/use-toast";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   id: string;
@@ -44,54 +46,38 @@ export const AIAgent = () => {
     setIsLoading(true);
 
     try {
-      // Simular resposta da IA com conhecimento trabalhista
-      const aiResponse = await generateAIResponse(inputMessage);
-      
+      const response = await fetch('http://127.0.0.1:5000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: inputMessage }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Falha ao comunicar com o servidor.');
+      }
+
+      const data = await response.json();
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: aiResponse,
+        content: data.reply,
         sender: "ai",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error fetching AI response:", error);
       toast({
-        title: "Erro",
-        description: "Erro ao gerar resposta. Tente novamente.",
+        title: "Erro de Comunicação",
+        description: error.message || "Não foi possível obter uma resposta da IA. Verifique o console para mais detalhes.",
         variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const generateAIResponse = async (question: string): Promise<string> => {
-    // Simulação de resposta baseada em palavras-chave
-    const lowerQuestion = question.toLowerCase();
-    
-    if (lowerQuestion.includes("férias")) {
-      return "🏖️ **Sobre Férias (CLT Art. 129-153):**\n\n• **Período**: 30 dias corridos após 12 meses de trabalho\n• **Abono**: Pode converter 1/3 em dinheiro\n• **Pagamento**: Até 2 dias antes do início\n• **Aviso**: Empregador deve comunicar com 30 dias de antecedência\n\nPrecisa de mais detalhes sobre algum aspecto específico?";
-    }
-    
-    if (lowerQuestion.includes("rescisão") || lowerQuestion.includes("demissão")) {
-      return "📋 **Sobre Rescisão de Contrato:**\n\n• **Aviso Prévio**: 30 dias + 3 dias por ano trabalhado\n• **13º Salário**: Proporcional aos meses trabalhados\n• **Férias**: Vencidas + proporcionais + 1/3\n• **FGTS**: Saque conforme tipo de rescisão\n• **Seguro Desemprego**: Para demissão sem justa causa\n\nQual tipo de rescisão você gostaria de saber mais?";
-    }
-    
-    if (lowerQuestion.includes("13") || lowerQuestion.includes("décimo")) {
-      return "💰 **13º Salário (Lei 4.090/62):**\n\n• **1ª Parcela**: Até 30 de novembro (50% do salário)\n• **2ª Parcela**: Até 20 de dezembro (saldo restante)\n• **Base de Cálculo**: Maior salário do ano\n• **Proporcional**: Para quem não trabalhou o ano todo\n\nNeed mais informações sobre o cálculo?";
-    }
-    
-    if (lowerQuestion.includes("fgts")) {
-      return "🏦 **FGTS - Fundo de Garantia:**\n\n• **Depósito**: 8% do salário mensalmente\n• **Saque sem justa causa**: 40% de multa\n• **Saque com justa causa**: Sem direito\n• **Outras hipóteses**: Aposentadoria, compra da casa própria, doenças graves\n\nPrecisa saber sobre alguma situação específica de saque?";
-    }
-    
-    if (lowerQuestion.includes("jornada") || lowerQuestion.includes("hora")) {
-      return "⏰ **Jornada de Trabalho (CLT Art. 58-75):**\n\n• **Limite**: 8h diárias, 44h semanais\n• **Hora Extra**: Mínimo 50% de adicional\n• **Intervalo**: 1h a 2h para jornada > 6h\n• **Banco de Horas**: Compensação em até 6 meses\n\nQuer saber sobre algum tipo específico de jornada?";
-    }
-    
-    // Resposta genérica para outras perguntas
-    return `📚 **Consulta sobre Legislação Trabalhista:**\n\nSua pergunta: "${question}"\n\nPara uma resposta mais precisa, você pode:\n\n• Consultar a CLT (Consolidação das Leis do Trabalho)\n• Verificar jurisprudências do TST\n• Buscar orientação de um advogado trabalhista\n\n💡 **Dica**: Tente perguntas sobre temas como férias, rescisão, 13º salário, FGTS, jornada de trabalho, etc.`;
   };
 
   return (
@@ -146,13 +132,15 @@ export const AIAgent = () => {
                     )}
                     
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
+                      className={`prose prose-sm max-w-[80%] rounded-lg p-3 ${
                         message.sender === "user"
                           ? "bg-primary text-primary-foreground ml-auto"
                           : "bg-muted"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-line">{message.content}</p>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </ReactMarkdown>
                       <span className="text-xs opacity-70 mt-1 block">
                         {message.timestamp.toLocaleTimeString("pt-BR", {
                           hour: "2-digit",
