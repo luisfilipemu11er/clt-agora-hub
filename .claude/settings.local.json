@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(echo:*)",
+      "Bash(git push:*)",
+      "Read(//c/Users/Luis - Trabalho/Documents/Nova pasta/**)",
+      "Bash(dir:*)",
+      "Bash(npm run build:*)",
+      "Bash(taskkill:*)",
+      "Bash(set FLASK_PORT=5001)",
+      "Bash(python:*)",
+      "Bash(timeout:*)",
+      "Bash(curl http://127.0.0.1:5000/api/news)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,16 @@
+services:
+  # Backend API - Flask
+  - type: web
+    name: clt-agora-backend
+    runtime: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 wsgi:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: False
+      - key: GOOGLE_API_KEY
+        fromSecret: true
+      - key: GOOGLE_API_KEY_ANALYSIS
+        fromSecret: true
