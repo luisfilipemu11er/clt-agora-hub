@@ -3,7 +3,7 @@ services:
   - type: web
     name: clt-agora-backend
     runtime: python
-    buildCommand: ls -R && cd backend && pip install -r requirements.txt
+    buildCommand: pip install -r backend/requirements.txt
     startCommand: cd backend && gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 wsgi:app
     envVars:
       - key: FLASK_ENV
