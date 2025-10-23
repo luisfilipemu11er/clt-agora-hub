@@ -1,11 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, User, Send, MessageCircle, ArrowLeft } from "lucide-react";
-import { BottomNavigation } from "@/components/BottomNavigation";
+import { Send, User, Sparkles, Shield, Info } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -21,15 +18,21 @@ export const AIAgent = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Olá! Sou seu assistente de IA especializado em legislação trabalhista. Como posso ajudar você hoje?",
-      sender: "ai", 
+      content: "Olá! Sou a **Celeste**, sua assistente especializada em CLT e legislação trabalhista brasileira. 👋\n\nEstou aqui para ajudar com:\n\n- ✅ Dúvidas sobre direitos trabalhistas\n- 📊 Cálculos de férias, rescisão e 13º salário\n- 📖 Explicações sobre a CLT\n- ⚖️ Orientações sobre processos trabalhistas\n\nComo posso te ajudar hoje?",
+      sender: "ai",
       timestamp: new Date()
     }
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -62,7 +65,7 @@ export const AIAgent = () => {
       const data = await response.json();
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.reply,
+        content: data.message,
         sender: "ai",
         timestamp: new Date()
       };
@@ -72,7 +75,7 @@ export const AIAgent = () => {
       console.error("Error fetching AI response:", error);
       toast({
         title: "Erro de Comunicação",
-        description: error.message || "Não foi possível obter uma resposta da IA. Verifique o console para mais detalhes.",
+        description: error.message || "Não foi possível obter uma resposta da IA.",
         variant: "destructive"
       });
     } finally {
@@ -81,124 +84,205 @@ export const AIAgent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-20 md:pb-0">
-      {/* Header */}
-      <div className="bg-gradient-primary text-white p-6 shadow-elevated">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate(-1)}
-              className="text-white hover:bg-white/10 -ml-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <h1 className="text-2xl font-bold flex items-center gap-3">
-              <Bot className="w-6 h-6" />
-              Agente IA Trabalhista
-            </h1>
+    <div className="min-h-screen bg-white relative overflow-hidden flex flex-col">
+      {/* Mesh Gradient Background */}
+      <div className="fixed inset-0 mesh-gradient opacity-30 pointer-events-none" />
+
+      {/* Premium Header */}
+      <div className="relative pt-16 pb-8 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Celeste Avatar with Glow */}
+          <div className="inline-block mb-6 animate-fade-in">
+            <div className="relative">
+              <div className="absolute inset-0 gradient-purple-blue rounded-full blur-2xl opacity-40 animate-pulse-glow"></div>
+              <div className="relative w-28 h-28 gradient-purple-blue rounded-full flex items-center justify-center shadow-premium-lg p-1 animate-float">
+                <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+                  <img
+                    src="/celeste.png"
+                    alt="Celeste"
+                    className="w-24 h-24 rounded-full"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-primary-foreground/80 ml-12">
-            Tire suas dúvidas sobre legislação trabalhista
+
+          {/* Title */}
+          <h1 className="text-5xl font-extrabold mb-3 animate-fade-in-delay-1">
+            <span className="gradient-text">Celeste</span>
+          </h1>
+          <p className="text-lg text-gray-600 font-semibold mb-4 animate-fade-in-delay-2">
+            Assistente IA Especializada em CLT
           </p>
+
+          {/* Trust Badges */}
+          <div className="flex items-center justify-center gap-4 animate-fade-in-delay-3">
+            <div className="flex items-center gap-2 glass px-4 py-2 rounded-full border border-white/40">
+              <Shield className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-medium text-gray-700">100% Confiável</span>
+            </div>
+            <div className="flex items-center gap-2 glass px-4 py-2 rounded-full border border-white/40">
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-medium text-gray-700">IA Avançada</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Chat Area */}
-      <div className="flex-1 max-w-4xl mx-auto w-full p-4">
-        <Card className="h-[calc(100vh-280px)] shadow-card bg-gradient-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <MessageCircle className="w-5 h-5" />
-              Chat com IA Especializada
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col h-full p-0">
-            {/* Messages */}
-            <ScrollArea className="flex-1 px-6">
-              <div className="space-y-4 pb-4">
-                {messages.map((message) => (
+      {/* Chat Container */}
+      <div className="relative flex-1 max-w-6xl mx-auto w-full px-6 pb-6 flex flex-col">
+        <div className="glass border-2 border-white/40 rounded-3xl shadow-premium-lg flex-1 flex flex-col overflow-hidden backdrop-blur-xl">
+          {/* Messages Area */}
+          <ScrollArea className="flex-1 p-8" ref={scrollRef}>
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {messages.map((message, index) => (
+                <div
+                  key={message.id}
+                  className={`flex gap-4 animate-fade-in ${
+                    message.sender === "user" ? "justify-end" : "justify-start"
+                  }`}
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  {/* AI Avatar */}
+                  {message.sender === "ai" && (
+                    <div className="w-12 h-12 gradient-purple-blue rounded-2xl flex items-center justify-center flex-shrink-0 shadow-premium">
+                      <img
+                        src="/celeste.png"
+                        alt="Celeste"
+                        className="w-10 h-10 rounded-xl"
+                      />
+                    </div>
+                  )}
+
+                  {/* Message Bubble */}
                   <div
-                    key={message.id}
-                    className={`flex gap-3 ${
-                      message.sender === "user" ? "justify-end" : "justify-start"
+                    className={`max-w-[75%] rounded-2xl p-6 shadow-lg ${
+                      message.sender === "user"
+                        ? "gradient-purple-blue text-white"
+                        : "bg-white border-2 border-purple-100 text-gray-800"
                     }`}
                   >
-                    {message.sender === "ai" && (
-                      <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="w-4 h-4" />
-                      </div>
-                    )}
-                    
-                    <div
-                      className={`prose prose-sm max-w-[80%] rounded-lg p-3 ${
-                        message.sender === "user"
-                          ? "bg-primary text-primary-foreground ml-auto"
-                          : "bg-muted"
-                      }`}
-                    >
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <div className="prose prose-sm max-w-none">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({ children }) => (
+                            <p className={`mb-3 last:mb-0 leading-relaxed ${
+                              message.sender === "user" ? "text-white" : "text-gray-800"
+                            }`}>
+                              {children}
+                            </p>
+                          ),
+                          strong: ({ children }) => (
+                            <strong className={`font-bold ${
+                              message.sender === "user" ? "text-white" : "text-gray-900"
+                            }`}>
+                              {children}
+                            </strong>
+                          ),
+                          li: ({ children }) => (
+                            <li className={`mb-1 ${
+                              message.sender === "user" ? "text-white" : "text-gray-800"
+                            }`}>
+                              {children}
+                            </li>
+                          ),
+                          ul: ({ children }) => (
+                            <ul className={`mb-3 last:mb-0 space-y-1 ${
+                              message.sender === "user" ? "text-white" : "text-gray-800"
+                            }`}>
+                              {children}
+                            </ul>
+                          ),
+                          h3: ({ children }) => (
+                            <h3 className={`text-lg font-bold mb-2 ${
+                              message.sender === "user" ? "text-white" : "text-gray-900"
+                            }`}>
+                              {children}
+                            </h3>
+                          ),
+                        }}
+                      >
                         {message.content}
                       </ReactMarkdown>
-                      <span className="text-xs opacity-70 mt-1 block">
-                        {message.timestamp.toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit"
-                        })}
-                      </span>
                     </div>
-
-                    {message.sender === "user" && (
-                      <div className="w-8 h-8 bg-secondary/10 text-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                        <User className="w-4 h-4" />
-                      </div>
-                    )}
+                    <span
+                      className={`text-xs mt-3 block font-medium ${
+                        message.sender === "user" ? "text-white/70" : "text-gray-500"
+                      }`}
+                    >
+                      {message.timestamp.toLocaleTimeString("pt-BR", {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
+                    </span>
                   </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="flex gap-3 justify-start">
-                    <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-                      <Bot className="w-4 h-4" />
+
+                  {/* User Avatar */}
+                  {message.sender === "user" && (
+                    <div className="w-12 h-12 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <User className="w-6 h-6 text-white" />
                     </div>
-                    <div className="bg-muted rounded-lg p-3">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                        <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                      </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Loading Indicator */}
+              {isLoading && (
+                <div className="flex gap-4 justify-start animate-fade-in">
+                  <div className="w-12 h-12 gradient-purple-blue rounded-2xl flex items-center justify-center shadow-premium">
+                    <img
+                      src="/celeste.png"
+                      alt="Celeste"
+                      className="w-10 h-10 rounded-xl"
+                    />
+                  </div>
+                  <div className="bg-white border-2 border-purple-100 rounded-2xl p-6 shadow-lg">
+                    <div className="flex space-x-2">
+                      <div className="w-3 h-3 gradient-purple-blue rounded-full animate-bounce"></div>
+                      <div className="w-3 h-3 gradient-purple-blue rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                      <div className="w-3 h-3 gradient-purple-blue rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                     </div>
                   </div>
-                )}
-              </div>
-            </ScrollArea>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
 
-            {/* Input Area */}
-            <div className="border-t border-border/50 p-4">
-              <div className="flex gap-2">
+          {/* Input Area */}
+          <div className="border-t-2 border-purple-100 p-6 bg-white/80 backdrop-blur-sm">
+            <div className="max-w-4xl mx-auto">
+              {/* Input Row */}
+              <div className="flex gap-3 mb-4">
                 <Input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Digite sua pergunta sobre legislação trabalhista..."
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  placeholder="Digite sua pergunta sobre CLT, direitos trabalhistas..."
+                  onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex-1 h-14 text-base border-2 border-purple-200 focus:border-purple-400 rounded-2xl px-6 font-medium"
                 />
-                <Button 
+                <Button
                   onClick={handleSendMessage}
                   disabled={isLoading || !inputMessage.trim()}
-                  size="icon"
+                  className="gradient-purple-blue hover:opacity-90 h-14 px-8 rounded-2xl font-bold shadow-premium hover-lift disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5 mr-2" />
+                  Enviar
                 </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
-      <BottomNavigation />
+              {/* Disclaimer */}
+              <div className="flex items-start gap-2 text-xs text-gray-600 bg-blue-50 p-3 rounded-xl border border-blue-200">
+                <Info className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong className="text-blue-700">Importante:</strong> Celeste é baseada em IA e fornece orientações sobre CLT. Para questões complexas ou decisões importantes, sempre consulte um advogado trabalhista ou seu departamento de RH.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

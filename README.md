@@ -1,73 +1,106 @@
-# Welcome to your Lovable project
+# CLT Agora - Hub de Informações Trabalhistas
 
-## Project info
+O CLT Agora é uma aplicação web completa para profissionais de RH, contabilidade e gestão de pessoal, oferecendo notícias, calculadoras e ferramentas relacionadas à Consolidação das Leis do Trabalho (CLT) no Brasil.
 
-**URL**: https://lovable.dev/projects/b1e4ca0f-335e-469d-8496-1be3cb31ead8
+## Estrutura do Projeto
 
-## How can I edit this code?
+O projeto é dividido em duas partes principais:
 
-There are several ways of editing your application.
+*   `/frontend`: Uma aplicação single-page (SPA) construída com React e Vite, responsável pela interface do usuário.
+*   `/backend`: Uma API RESTful construída com Flask (Python), responsável pela lógica de negócio, scraping de notícias e interação com a IA.
 
-**Use Lovable**
+## Tecnologias Utilizadas
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b1e4ca0f-335e-469d-8496-1be3cb31ead8) and start prompting.
+### Frontend
+*   **Framework:** React com Vite
+*   **Linguagem:** TypeScript
+*   **Estilização:** Tailwind CSS & shadcn/ui
+*   **Roteamento:** React Router
+*   **Gerenciamento de Estado:** React Query
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend
+*   **Framework:** Flask
+*   **Linguagem:** Python
+*   **Servidor WSGI:** Gunicorn
+*   **IA:** Google Gemini
+*   **Web Scraping:** BeautifulSoup & Requests
 
-**Use your preferred IDE**
+## Começando
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Siga os passos abaixo para configurar e rodar o projeto localmente.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Pré-requisitos
 
-Follow these steps:
+*   [Node.js](https://nodejs.org/) (versão 18 ou superior)
+*   [Python](https://www.python.org/) (versão 3.10 ou superior)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Configuração do Backend
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1.  **Navegue até a pasta do backend:**
+    ```sh
+    cd backend
+    ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2.  **Crie e ative um ambiente virtual:**
+    ```sh
+    # Windows
+    python -m venv venv
+    venv\Scripts\activate
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+    # macOS / Linux
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
 
-**Edit a file directly in GitHub**
+3.  **Instale as dependências:**
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+4.  **Configure as variáveis de ambiente:**
+    *   Renomeie o arquivo `.env.example` (se houver) para `.env`.
+    *   Adicione sua chave da API do Google no arquivo `.env`:
+        ```
+        GOOGLE_API_KEY=SUA_CHAVE_API_AQUI
+        GOOGLE_API_KEY_ANALYSIS=SUA_OUTRA_CHAVE_API_AQUI
+        ```
 
-**Use GitHub Codespaces**
+5.  **Inicie o servidor de desenvolvimento:**
+    ```sh
+    python run.py
+    ```
+    O backend estará rodando em `http://127.0.0.1:5000`.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Configuração do Frontend
 
-## What technologies are used for this project?
+1.  **Navegue até a pasta do frontend:**
+    ```sh
+    cd frontend
+    ```
 
-This project is built with:
+2.  **Instale as dependências:**
+    ```sh
+    npm install
+    ```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+3.  **Configure a variável de ambiente:**
+    *   Crie um arquivo `.env.local` na pasta `frontend`.
+    *   Adicione a URL da API do backend:
+        ```
+        VITE_API_URL=http://127.0.0.1:5000
+        ```
 
-## How can I deploy this project?
+4.  **Inicie o servidor de desenvolvimento:**
+    ```sh
+    npm run dev
+    ```
+    A aplicação estará acessível em `http://localhost:8080` (ou outra porta indicada no terminal).
 
-Simply open [Lovable](https://lovable.dev/projects/b1e4ca0f-335e-469d-8496-1be3cb31ead8) and click on Share -> Publish.
+## Deploy
 
-## Can I connect a custom domain to my Lovable project?
+A aplicação pode ser implantada usando a seguinte combinação:
 
-Yes, you can!
+*   **Backend (Flask):** No [Render](https://render.com/), utilizando o arquivo `render.yaml` presente no projeto.
+*   **Frontend (React):** Na [Vercel](https://vercel.com/), que detectará e configurará automaticamente o projeto Vite.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Lembre-se de configurar as variáveis de ambiente (`GOOGLE_API_KEY` no Render e `VITE_API_URL` na Vercel) nos dashboards das respectivas plataformas.

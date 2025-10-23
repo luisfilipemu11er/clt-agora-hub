@@ -3,19 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Calculator, Calendar, DollarSign, Info, Award, Sparkles } from "lucide-react";
+import { Wallet, Calculator, Calendar, DollarSign, Info, Sparkles, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-import {
-  calculateINSS,
-  calculateIRRF,
-  type VacationCalculationResult,
-} from "@/lib/calculations";
 
-export const VacationCalculator = () => {
+export const FGTSCalculator = () => {
   const [salary, setSalary] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [dependents, setDependents] = useState("0");
-  const [result, setResult] = useState<VacationCalculationResult | null>(null);
+  const [admissionDate, setAdmissionDate] = useState("");
+  const [result, setResult] = useState<{
+    monthlyDeposit: number;
+    totalDeposit: number;
+    months: number;
+  } | null>(null);
 
   // Format currency as user types
   const formatCurrencyInput = (value: string) => {
@@ -39,42 +37,30 @@ export const VacationCalculator = () => {
     setSalary(formatted);
   };
 
-  const calculateVacation = () => {
+  const calculateFGTS = () => {
     // Parse formatted currency back to number
     const salaryValue = parseFloat(salary.replace(/\./g, "").replace(",", "."));
-    const dependentsValue = parseInt(dependents);
 
     if (!salaryValue || salaryValue <= 0) {
       toast.error("Digite um salário válido");
       return;
     }
 
-    if (!startDate) {
-      toast.error("Digite a data de início");
+    if (!admissionDate) {
+      toast.error("Digite a data de admissão");
       return;
     }
 
-    const vacationDays = 30;
-    const dailySalary = salaryValue / 30;
-    const grossVacation = dailySalary * vacationDays;
-    const oneThirdBonus = grossVacation / 3;
-    const totalGross = grossVacation + oneThirdBonus;
-
-    const inss = calculateINSS(totalGross);
-    const irrfBase = totalGross - inss;
-    const irrf = calculateIRRF(irrfBase, dependentsValue);
-
-    const netVacation = totalGross - inss - irrf;
+    const monthlyDeposit = salaryValue * 0.08;
+    const admission = new Date(admissionDate);
+    const today = new Date();
+    const months = Math.floor((today.getTime() - admission.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+    const totalDeposit = monthlyDeposit * months;
 
     setResult({
-      grossVacation,
-      oneThirdBonus,
-      totalGross,
-      inssBase: totalGross,
-      inss,
-      irrfBase,
-      irrf,
-      netVacation,
+      monthlyDeposit,
+      totalDeposit,
+      months,
     });
 
     toast.success("Cálculo realizado com sucesso!");
@@ -98,19 +84,19 @@ export const VacationCalculator = () => {
           {/* Icon */}
           <div className="inline-block mb-6 animate-fade-in">
             <div className="relative">
-              <div className="absolute inset-0 gradient-red-pink rounded-full blur-2xl opacity-40 animate-pulse-glow"></div>
-              <div className="relative w-24 h-24 gradient-red-pink rounded-3xl flex items-center justify-center shadow-premium-lg animate-float">
-                <TrendingUp className="w-12 h-12 text-white" />
+              <div className="absolute inset-0 gradient-blue-cyan rounded-full blur-2xl opacity-40 animate-pulse-glow"></div>
+              <div className="relative w-24 h-24 gradient-blue-cyan rounded-3xl flex items-center justify-center shadow-premium-lg animate-float">
+                <Wallet className="w-12 h-12 text-white" />
               </div>
             </div>
           </div>
 
           {/* Title */}
           <h1 className="text-5xl font-extrabold mb-3 animate-fade-in-delay-1">
-            Calculadora de <span className="gradient-text-red">Férias</span>
+            Calculadora de <span className="gradient-text-blue">FGTS</span>
           </h1>
           <p className="text-lg text-gray-600 mb-4 animate-fade-in-delay-2 max-w-2xl mx-auto">
-            Calcule seus direitos trabalhistas de forma precisa e rápida
+            Calcule depósitos mensais e acumulado do FGTS de forma precisa
           </p>
         </div>
       </div>
@@ -123,7 +109,7 @@ export const VacationCalculator = () => {
             <Card className="glass border-2 border-white/40 shadow-premium-lg">
               <CardHeader className="border-b border-gray-100 pb-6">
                 <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-900">
-                  <div className="w-10 h-10 gradient-red-pink rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 gradient-blue-cyan rounded-xl flex items-center justify-center">
                     <Calculator className="w-6 h-6 text-white" />
                   </div>
                   Dados para Cálculo
@@ -133,8 +119,8 @@ export const VacationCalculator = () => {
                 {/* Salary Input */}
                 <div className="space-y-3">
                   <Label htmlFor="salary" className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-red-600" />
-                    Salário Mensal
+                    <DollarSign className="w-4 h-4 text-blue-600" />
+                    Salário Bruto Mensal
                     <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
@@ -147,63 +133,42 @@ export const VacationCalculator = () => {
                       placeholder="0,00"
                       value={salary}
                       onChange={handleSalaryChange}
-                      className="h-14 pl-12 text-lg font-bold border-2 border-red-200 focus:border-red-400 rounded-xl"
+                      className="h-14 pl-12 text-lg font-bold border-2 border-blue-200 focus:border-blue-400 rounded-xl"
                     />
                   </div>
                   <p className="text-xs text-gray-500 flex items-start gap-1">
                     <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                    Digite o valor do último salário recebido
+                    Digite o valor do salário bruto mensal
                   </p>
                 </div>
 
                 {/* Date Input */}
                 <div className="space-y-3">
-                  <Label htmlFor="startDate" className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-red-600" />
-                    Data de Início das Férias
+                  <Label htmlFor="admissionDate" className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-blue-600" />
+                    Data de Admissão
                     <span className="text-red-500">*</span>
                   </Label>
                   <Input
-                    id="startDate"
+                    id="admissionDate"
                     type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="h-14 text-base font-semibold border-2 border-red-200 focus:border-red-400 rounded-xl"
+                    value={admissionDate}
+                    onChange={(e) => setAdmissionDate(e.target.value)}
+                    className="h-14 text-base font-semibold border-2 border-blue-200 focus:border-blue-400 rounded-xl"
                   />
                   <p className="text-xs text-gray-500 flex items-start gap-1">
                     <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                    Escolha a data de início do período de férias
-                  </p>
-                </div>
-
-                {/* Dependents Input */}
-                <div className="space-y-3">
-                  <Label htmlFor="dependents" className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-red-600" />
-                    Número de Dependentes
-                  </Label>
-                  <Input
-                    id="dependents"
-                    type="number"
-                    min="0"
-                    placeholder="0"
-                    value={dependents}
-                    onChange={(e) => setDependents(e.target.value)}
-                    className="h-14 text-lg font-bold border-2 border-red-200 focus:border-red-400 rounded-xl"
-                  />
-                  <p className="text-xs text-gray-500 flex items-start gap-1">
-                    <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                    Quantidade de dependentes para dedução do IRRF
+                    Informe a data de início no emprego
                   </p>
                 </div>
 
                 {/* Calculate Button */}
                 <Button
-                  onClick={calculateVacation}
-                  className="w-full gradient-red-pink hover:opacity-90 text-white h-16 text-lg font-bold shadow-premium hover-lift rounded-xl mt-8"
+                  onClick={calculateFGTS}
+                  className="w-full gradient-blue-cyan hover:opacity-90 text-white h-16 text-lg font-bold shadow-premium hover-lift rounded-xl mt-8"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
-                  Calcular Férias
+                  Calcular FGTS
                   <Calculator className="w-5 h-5 ml-2" />
                 </Button>
               </CardContent>
@@ -225,84 +190,59 @@ export const VacationCalculator = () => {
                 {result ? (
                   <div className="space-y-6">
                     {/* Main Result */}
-                    <div className="text-center py-8 glass border-2 border-red-200 rounded-3xl">
-                      <div className="w-16 h-16 gradient-red-pink rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-premium animate-pulse-glow">
-                        <DollarSign className="w-10 h-10 text-white" />
+                    <div className="text-center py-8 glass border-2 border-blue-200 rounded-3xl">
+                      <div className="w-16 h-16 gradient-blue-cyan rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-premium animate-pulse-glow">
+                        <Wallet className="w-10 h-10 text-white" />
                       </div>
                       <p className="text-gray-600 text-lg font-semibold mb-2">
-                        Valor Líquido a Receber
+                        Total Acumulado FGTS
                       </p>
-                      <p className="text-5xl font-extrabold gradient-text-red mb-1">
-                        {formatCurrency(result.netVacation)}
+                      <p className="text-5xl font-extrabold gradient-text-blue mb-1">
+                        {formatCurrency(result.totalDeposit)}
                       </p>
-                      <p className="text-sm text-gray-500 font-medium">Já descontados INSS e IRRF</p>
+                      <p className="text-sm text-gray-500 font-medium">Estimativa baseada em {result.months} meses</p>
                     </div>
 
                     {/* Detailed Breakdown */}
                     <div className="bg-white/60 rounded-2xl p-6 border-2 border-gray-100 space-y-4">
                       <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2">
-                        <Info className="w-5 h-5 text-red-600" />
+                        <Info className="w-5 h-5 text-blue-600" />
                         Detalhamento do Cálculo
                       </h3>
 
                       <div className="space-y-3">
-                        {/* Gross Items */}
+                        {/* Monthly Deposit */}
                         <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                          <span className="text-gray-700 font-medium">Férias (30 dias)</span>
+                          <span className="text-gray-700 font-medium">Depósito Mensal (8%)</span>
                           <span className="font-bold text-lg text-gray-900">
-                            {formatCurrency(result.grossVacation)}
+                            {formatCurrency(result.monthlyDeposit)}
                           </span>
                         </div>
 
                         <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                          <span className="text-gray-700 font-medium flex items-center gap-2">
-                            1/3 Constitucional
-                            <Award className="w-4 h-4 text-red-500" />
-                          </span>
-                          <span className="font-bold text-lg text-red-600">
-                            + {formatCurrency(result.oneThirdBonus)}
+                          <span className="text-gray-700 font-medium">Meses Trabalhados</span>
+                          <span className="font-bold text-lg text-blue-600">
+                            {result.months} meses
                           </span>
                         </div>
 
-                        <div className="flex justify-between items-center py-3 bg-red-50 px-4 rounded-xl border-2 border-red-200">
-                          <span className="font-bold text-gray-900">Total Bruto</span>
-                          <span className="font-extrabold text-xl text-red-700">
-                            {formatCurrency(result.totalGross)}
-                          </span>
-                        </div>
-
-                        {/* Deductions */}
-                        <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                          <span className="text-gray-700 font-medium">(-) INSS</span>
-                          <span className="font-bold text-lg text-red-600">
-                            - {formatCurrency(result.inss)}
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                          <span className="text-gray-700 font-medium">(-) IRRF</span>
-                          <span className="font-bold text-lg text-red-600">
-                            - {formatCurrency(result.irrf)}
-                          </span>
-                        </div>
-
-                        {/* Net Total */}
-                        <div className="flex justify-between items-center py-4 bg-gradient-to-r from-red-50 to-pink-50 px-4 rounded-xl border-2 border-red-300 mt-4">
-                          <span className="font-extrabold text-lg text-gray-900">Valor Líquido</span>
-                          <span className="font-extrabold text-2xl text-red-600">
-                            {formatCurrency(result.netVacation)}
+                        {/* Total */}
+                        <div className="flex justify-between items-center py-4 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 rounded-xl border-2 border-blue-300 mt-4">
+                          <span className="font-extrabold text-lg text-gray-900">Total Acumulado</span>
+                          <span className="font-extrabold text-2xl text-blue-600">
+                            {formatCurrency(result.totalDeposit)}
                           </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Info Box */}
-                    <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-start gap-3">
-                      <Info className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                      <div className="text-sm text-red-900">
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 flex items-start gap-3">
+                      <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm text-blue-900">
                         <p className="font-bold mb-1">Sobre o cálculo:</p>
                         <p className="leading-relaxed">
-                          O valor das férias corresponde ao salário base mais 1/3 constitucional, com descontos de INSS e IRRF aplicados sobre o valor bruto total.
+                          O FGTS corresponde a 8% do salário bruto mensal depositado pelo empregador. O cálculo é uma estimativa baseada no período informado, sem considerar variações salariais, 13º salário ou férias.
                         </p>
                       </div>
                     </div>
@@ -316,7 +256,7 @@ export const VacationCalculator = () => {
                       Aguardando dados
                     </p>
                     <p className="text-gray-500">
-                      Preencha os campos ao lado para calcular suas férias
+                      Preencha os campos ao lado para calcular seu FGTS
                     </p>
                   </div>
                 )}

@@ -66,7 +66,7 @@ export const AIChatWidget = ({ onClose }: AIChatWidgetProps) => {
       const data = await response.json();
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.reply,
+        content: data.message,
         sender: "ai",
       };
 

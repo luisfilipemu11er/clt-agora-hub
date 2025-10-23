@@ -39,18 +39,34 @@ def get_news():
             limit = 20
 
         # Get news based on parameters
-        if search_query:
-            articles = search_news(search_query, limit=limit)
-        elif source:
-            articles = get_news_by_source(source, limit=limit)
-        else:
-            articles = get_latest_news(limit=limit)
+        if search_query or source:
+            # For search/filter, return simple list
+            if search_query:
+                articles = search_news(search_query, limit=limit)
+            else:
+                articles = get_news_by_source(source, limit=limit)
 
-        return jsonify({
-            'success': True,
-            'count': len(articles),
-            'articles': articles
-        }), 200
+            return jsonify({
+                'success': True,
+                'count': len(articles),
+                'articles': articles
+            }), 200
+        else:
+            # For main feed, return with News of the Day
+            news_data = get_latest_news(limit=limit)
+
+            # Combine news_of_the_day + other_news into a single articles list
+            all_articles = []
+            if news_data.get('news_of_the_day'):
+                all_articles.append(news_data['news_of_the_day'])
+            all_articles.extend(news_data.get('other_news', []))
+
+            return jsonify({
+                'success': True,
+                'count': len(all_articles),
+                'news_of_the_day': news_data.get('news_of_the_day'),
+                'articles': all_articles
+            }), 200
 
     except Exception as e:
         print(f"Error in news endpoint: {e}")

@@ -22,8 +22,20 @@ def create_app(config_class=Config):
 
     # Initialize AI services
     from app.services import ai_service, openai_service
+    from app.services.clt_document_service import clt_service
+
     ai_service.init_ai_model()
     openai_service.init_openai_client()
+
+    # Pre-load CLT documents in background
+    import threading
+    def load_clt_docs():
+        print("[CLT] Loading official CLT documents in background...")
+        clt_service.get_all_documents()
+        print("[CLT] Documents loaded and cached successfully")
+
+    thread = threading.Thread(target=load_clt_docs, daemon=True)
+    thread.start()
 
     # Register blueprints
     from app.routes import news, chat, article

@@ -10,6 +10,11 @@ import { NewsDetail } from "./pages/NewsDetail";
 import { Tools } from "./pages/Tools";
 import VacationCalculatorPage from "./pages/VacationCalculatorPage";
 import { TerminationCalculator } from "./pages/TerminationCalculator";
+import { FGTSCalculator } from "./pages/FGTSCalculator";
+import { OvertimeCalculator } from "./pages/OvertimeCalculator";
+import { NetSalaryCalculator } from "./pages/NetSalaryCalculator";
+import { ThirteenthSalaryCalculator } from "./pages/ThirteenthSalaryCalculator";
+import { WorkCalendar } from "./pages/WorkCalendar";
 import { Glossary } from "./pages/Glossary";
 import { Search } from "./pages/Search";
 import { AIAgent } from "./pages/AIAgent";
@@ -31,6 +36,11 @@ const App = () => (
             <Route path="/tools" element={<Tools />} />
             <Route path="/tools/vacation-calculator" element={<VacationCalculatorPage />} />
             <Route path="/tools/termination-calculator" element={<TerminationCalculator />} />
+            <Route path="/tools/fgts-calculator" element={<FGTSCalculator />} />
+            <Route path="/tools/overtime-calculator" element={<OvertimeCalculator />} />
+            <Route path="/tools/net-salary-calculator" element={<NetSalaryCalculator />} />
+            <Route path="/tools/thirteenth-salary-calculator" element={<ThirteenthSalaryCalculator />} />
+            <Route path="/tools/work-calendar" element={<WorkCalendar />} />
             <Route path="/tools/glossary" element={<Glossary />} />
             <Route path="/search" element={<Search />} />
             <Route path="/ai-agent" element={<AIAgent />} />

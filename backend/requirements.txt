@@ -8,3 +8,4 @@ pydantic==2.5.3
 gunicorn==21.2.0
 pytest==7.4.3
 lxml==4.9.3
+PyPDF2==3.0.1
